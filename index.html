@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Auth - Cosmic Authentication System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            position: relative;
+        }
+        
+        /* Animated Starfield Background */
+        .starfield {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: #fff;
+            border-radius: 50%;
+            opacity: 0;
+            animation: twinkle 3s infinite;
+        }
+        
+        .star:nth-child(odd) {
+            animation-delay: 1.5s;
+        }
+        
+        .star:nth-child(3n) {
+            animation-delay: 0.5s;
+        }
+        
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        /* Nebula Background Effect */
+        .nebula {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 198, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: drift 20s ease-in-out infinite alternate;
+        }
+        
+        @keyframes drift {
+            from { transform: rotate(0deg) translate(-10px, -10px); }
+            to { transform: rotate(5deg) translate(10px, 10px); }
+        }
+        
+        .container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .auth-container {
+            background: rgba(15, 15, 30, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .auth-container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(120, 119, 198, 0.05), transparent);
+            animation: scan 3s linear infinite;
+            pointer-events: none;
+        }
+        
+        @keyframes scan {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .logo h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        .logo p {
+            font-size: 0.9rem;
+            color: #b8b8b8;
+            font-weight: 300;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #d0d0d0;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        
+        .input-container {
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(30, 30, 60, 0.6);
+            border: 1px solid rgba(120, 119, 198, 0.3);
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
+            background: rgba(40, 40, 80, 0.8);
+        }
+        
+        .form-control::placeholder {
+            color: #888;
+        }
+        
+        .cosmic-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .cosmic-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .cosmic-btn:active {
+            transform: translateY(0);
+        }
+        
+        .cosmic-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transition: all 0.5s ease;
+            transform: translate(-50%, -50%);
+        }
+        
+        .cosmic-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .auth-switch {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .auth-switch p {
+            color: #b8b8b8;
+            margin-bottom: 10px;
+        }
+        
+        .switch-btn {
+            background: none;
+            border: none;
+            color: #667eea;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+        }
+        
+        .switch-btn:hover {
+            color: #764ba2;
+        }
+        
+        .profile-section {
+            display: none;
+        }
+        
+        .profile-section.active {
+            display: block;
+        }
+        
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            border: 3px solid rgba(120, 119, 198, 0.5);
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-left: 10px;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .cosmic-alert {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .cosmic-alert.success {
+            background: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border-left-color: #4CAF50;
+        }
+        
+        .cosmic-alert.error {
+            background: rgba(244, 67, 54, 0.1);
+            color: #f44336;
+            border-left-color: #f44336;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .warp-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle, transparent 20%, rgba(0, 0, 0, 0.8) 80%);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+        
+        .warp-animation.active {
+            opacity: 1;
+            animation: warpJump 1.5s ease-in-out;
+        }
+        
+        @keyframes warpJump {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .sync-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            color: #4CAF50;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .sync-indicator.active {
+            opacity: 1;
+            animation: syncPulse 0.5s ease-in-out;
+        }
+        
+        @keyframes syncPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        @media (max-width: 480px) {
+            .auth-container {
+                padding: 30px 20px;
+                margin: 10px;
+            }
+            
+            .logo h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Nebula Background -->
+    <div class="nebula"></div>
+    
+    <!-- Warp Animation Overlay -->
+    <div class="warp-animation" id="warpAnimation"></div>
+    
+    <div class="container">
+        <div class="auth-container">
+            <!-- Sync Indicator -->
+            <div class="sync-indicator" id="syncIndicator">⚡ Syncing...</div>
+            
+            <!-- Login/Signup Form -->
+            <div class="auth-section" id="authSection">
+                <div class="logo">
+                    <h1>GALAXY</h1>
+                    <p>Cosmic Authentication System</p>
+                </div>
+                
+                <div id="alertContainer"></div>
+                
+                <form id="authForm">
+                    <div class="form-group" id="nameGroup" style="display: none;">
+                        <label for="name">Full Name</label>
+                        <div class="input-container">
+                            <input type="text" id="name" class="form-control" placeholder="Enter your galactic name">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-container">
+                            <input type="email" id="email" class="form-control" placeholder="your.email@galaxy.com" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <div class="input-container">
+                            <input type="password" id="password" class="form-control" placeholder="Enter secure password" required>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="cosmic-btn" id="submitBtn">
+                        <span>Launch Into Space</span>
+                    </button>
+                </form>
+                
+                <div class="auth-switch">
+                    <p id="switchText">Don't have an account?</p>
+                    <button class="switch-btn" id="switchBtn">Create Cosmic Account</button>
+                </div>
+            </div>
+            
+            <!-- Profile Section -->
+            <div class="profile-section" id="profileSection">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">U</div>
+                    <h2 id="profileName">Space Explorer</h2>
+                    <p>Status: <span style="color: #4CAF50;">Online</span><span class="status-indicator"></span></p>
+                </div>
+                
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label for="profileEmail">Email</label>
+                        <input type="email" id="profileEmail" class="form-control" placeholder="your.email@galaxy.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileName">Full Name</label>
+                        <input type="text" id="profileNameInput" class="form-control" placeholder="Your galactic name">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="profileBio">Bio</label>
+                        <textarea id="profileBio" class="form-control" rows="3" placeholder="Tell us about your cosmic journey..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="cosmic-btn">
+                        <span>Update Profile</span>
+                    </button>
+                </form>
+                
+                <div class="auth-switch">
+                    <button class="switch-btn" id="logoutBtn">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global state
+        let isLogin = true;
+        let currentUser = null;
+        
+        // Simulated backend storage
+        const users = JSON.parse(localStorage.getItem('galaxyUsers') || '{}');
+        
+        // DOM elements
+        const authSection = document.getElementById('authSection');
+        const profileSection = document.getElementById('profileSection');
+        const authForm = document.getElementById('authForm');
+        const profileForm = document.getElementById('profileForm');
+        const nameGroup = document.getElementById('nameGroup');
+        const switchBtn = document.getElementById('switchBtn');
+        const switchText = document.getElementById('switchText');
+        const submitBtn = document.getElementById('submitBtn');
+        const alertContainer = document.getElementById('alertContainer');
+        const syncIndicator = document.getElementById('syncIndicator');
+        const warpAnimation = document.getElementById('warpAnimation');
+        
+        // Initialize starfield
+        function createStarfield() {
+            const starfield = document.getElementById('starfield');
+            const numberOfStars = 100;
+            
+            for (let i = 0; i < numberOfStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 3 + 's';
+                starfield.appendChild(star);
+            }
+        }
+        
+        // Show alert
+        function showAlert(message, type = 'success') {
+            const alert = document.createElement('div');
+            alert.className = `cosmic-alert ${type}`;
+            alert.textContent = message;
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.remove();
+            }, 4000);
+        }
+        
+        // Show sync indicator
+        function showSync() {
+            syncIndicator.classList.add('active');
+            setTimeout(() => {
+                syncIndicator.classList.remove('active');
+            }, 1000);
+        }
+        
+        // Warp jump animation
+        function triggerWarpJump() {
+            warpAnimation.classList.add('active');
+            setTimeout(() => {
+                warpAnimation.classList.remove('active');
+            }, 1500);
+        }
+        
+        // Switch between login/signup
+        function switchAuthMode() {
+            isLogin = !isLogin;
+            
+            if (isLogin) {
+                nameGroup.style.display = 'none';
+                submitBtn.innerHTML = '<span>Launch Into Space</span>';
+                switchText.textContent = "Don't have an account?";
+                switchBtn.textContent = 'Create Cosmic Account';
+            } else {
+                nameGroup.style.display = 'block';
+                submitBtn.innerHTML = '<span>Join the Galaxy</span>';
+                switchText.textContent = 'Already have an account?';
+                switchBtn.textContent = 'Return to Base';
+            }
+        }
+        
+        // Simulate backend authentication
+        function authenticate(email, password, name = null) {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (isLogin) {
+                        // Login logic
+                        if (users[email] && users[email].password === password) {
+                            resolve(users[email]);
+                        } else {
+                            reject(new Error('Invalid credentials detected in the cosmic database'));
+                        }
+                    } else {
+                        // Signup logic
+                        if (users[email]) {
+                            reject(new Error('This cosmic signature already exists'));
+                        } else {
+                            const newUser = {
+                                email,
+                                password,
+                                name: name || email.split('@')[0],
+                                bio: 'New space explorer',
+                                joinDate: new Date().toISOString()
+                            };
+                            users[email] = newUser;
+                            localStorage.setItem('galaxyUsers', JSON.stringify(users));
+                            resolve(newUser);
+                        }
+                    }
+                }, 1500); // Simulate network delay
+            });
+        }
+        
+        // Update profile
+        function updateProfile(userData) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    users[currentUser.email] = { ...users[currentUser.email], ...userData };
+                    localStorage.setItem('galaxyUsers', JSON.stringify(users));
+                    currentUser = users[currentUser.email];
+                    resolve(currentUser);
+                }, 800);
+            });
+        }
+        
+        // Load profile data
+        function loadProfile() {
+            document.getElementById('profileEmail').value = currentUser.email;
+            document.getElementById('profileNameInput').value = currentUser.name;
+            document.getElementById('profileBio').value = currentUser.bio || '';
+            document.getElementById('profileName').textContent = currentUser.name;
+            document.getElementById('profileAvatar').textContent = currentUser.name.charAt(0).toUpperCase();
+        }
+        
+        // Show profile section
+        function showProfile() {
+            authSection.style.display = 'none';
+            profileSection.classList.add('active');
+            loadProfile();
+        }
+        
+        // Show auth section
+        function showAuth() {
+            profileSection.classList.remove('active');
+            authSection.style.display = 'block';
+            currentUser = null;
+            authForm.reset();
+        }
+        
+        // Event listeners
+        switchBtn.addEventListener('click', switchAuthMode);
+        
+        authForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const name = document.getElementById('name').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span>🚀 Traveling through space...</span>';
+            
+            try {
+                triggerWarpJump();
+                currentUser = await authenticate(email, password, name);
+                showAlert(`Welcome to the galaxy, ${currentUser.name}!`, 'success');
+                setTimeout(() => {
+                    showProfile();
+                }, 1000);
+            } catch (error) {
+                showAlert(error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = isLogin ? '<span>Launch Into Space</span>' : '<span>Join the Galaxy</span>';
+            }
+        });
+        
+        profileForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(profileForm);
+            const updates = {
+                name: document.getElementById('profileNameInput').value,
+                bio: document.getElementById('profileBio').value
+            };
+            
+            showSync();
+            
+            try {
+                await updateProfile(updates);
+                loadProfile();
+                showAlert('Profile updated successfully! Changes synced across the galaxy.', 'success');
+            } catch (error) {
+                showAlert('Failed to sync profile updates', 'error');
+            }
+        });
+        
+        // Real-time sync simulation for profile inputs
+        const profileInputs = ['profileNameInput', 'profileBio'];
+        profileInputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            let syncTimeout;
+            
+            input.addEventListener('input', () => {
+                clearTimeout(syncTimeout);
+                syncTimeout = setTimeout(() => {
+                    showSync();
+                }, 500);
+            });
+        });
+        
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            showAlert('Safely returned to base. See you in the stars!', 'success');
+            setTimeout(() => {
+                showAuth();
+            }, 1000);
+        });
+        
+        // Initialize
+        createStarfield();
+        
+        // Auto-login demo user if available
+        const demoEmail = 'demo@galaxy.com';
+        if (!users[demoEmail]) {
+            users[demoEmail] = {
+                email: demoEmail,
+                password: 'demo123',
+                name: 'Galaxy Explorer',
+                bio: 'Veteran space traveler exploring the cosmic authentication system',
+                joinDate: new Date().toISOString()
+            };
+            localStorage.setItem('galaxyUsers', JSON.stringify(users));
+        }
+    </script>
+</body>
+</html>
